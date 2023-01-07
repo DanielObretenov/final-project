@@ -1,0 +1,26 @@
+version: '3.3'
+
+services:
+
+  db:
+    build: db
+    image: experimentdb:10
+    container_name: db
+    environment:
+      - POSTGRES_USER=postgres
+    ports:
+     - "5432:5432"
+  register:
+    build: registerbuild
+    image: experiment:10
+    container_name: register
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/my_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    deploy:
+      replicas: 1
+    ports:
+     - "8080:8080"
